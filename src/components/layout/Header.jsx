@@ -6,6 +6,7 @@ import Container from "../container/Container";
 import CategorySidebar from "../hero/CategorySidebar";
 import ContactModal from "../common/ContactModal";
 import ProfileModal from "../common/ProfileModal";
+
 import {
   CategoriesIcon,
   SearchIcon,
@@ -70,7 +71,7 @@ export default function Header() {
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
 
   const [isLoggedIn, setIsLoggedIn] = useState(
-    localStorage.getItem("isLoggedIn") === "true",
+    localStorage.getItem("isLoggedIn") === "true"
   );
 
   const [userEmail, setUserEmail] = useState("");
@@ -103,6 +104,21 @@ export default function Header() {
       window.removeEventListener("open-contact", handleOpenContact);
     };
   }, []);
+
+  // Открытие профиля из MobileBottomNav
+  useEffect(() => {
+    const handleOpenProfile = () => {
+      if (!isLoggedIn) {
+        setProfileOpen(true);
+      }
+    };
+
+    window.addEventListener("open-profile", handleOpenProfile);
+
+    return () => {
+      window.removeEventListener("open-profile", handleOpenProfile);
+    };
+  }, [isLoggedIn]);
 
   // Получаем пользователя
   useEffect(() => {
@@ -233,7 +249,6 @@ export default function Header() {
   const handleProfileClose = () => {
     setProfileOpen(false);
 
-    // Проверяем, вошёл ли пользователь после закрытия модалки
     const loggedIn = localStorage.getItem("isLoggedIn") === "true";
     const savedUser = localStorage.getItem("user");
 
@@ -255,7 +270,6 @@ export default function Header() {
         <Container className="flex items-center gap-3 py-3 md:gap-6">
           {/* Логотип */}
           <div className="shrink-0">
-            {/* Mobile */}
             <Link to="/" aria-label="Главная" className="block md:hidden">
               <img
                 src={
@@ -268,7 +282,6 @@ export default function Header() {
               />
             </Link>
 
-            {/* Desktop */}
             <div className="hidden md:block">
               <Logo variant={isScrolled ? "light" : "dark"} />
             </div>
@@ -297,7 +310,6 @@ export default function Header() {
           {/* Поиск */}
           <div ref={searchRef} className="relative flex-1 md:ml-0">
             <form onSubmit={handleSearchSubmit}>
-              {/* Desktop */}
               <input
                 type="search"
                 value={searchQuery}
@@ -310,7 +322,6 @@ export default function Header() {
                 className={`${theme.input} hidden md:block`}
               />
 
-              {/* Mobile */}
               <input
                 type="search"
                 value={searchQuery}
@@ -332,7 +343,6 @@ export default function Header() {
               </button>
             </form>
 
-            {/* Search suggestions */}
             {isSearchOpen && searchQuery.trim() && (
               <div className="absolute left-0 right-0 top-full z-[100] mt-2 max-h-[70vh] overflow-y-auto rounded-2xl border border-gray-200 bg-white shadow-xl">
                 {suggestions.length > 0 ? (
@@ -454,10 +464,8 @@ export default function Header() {
                 <UserIcon />
               </IconButton>
 
-              {/* Меню авторизованного пользователя */}
               {profileMenuOpen && isLoggedIn && (
                 <div className="absolute right-0 top-full z-[100] mt-3 w-[260px] overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-xl">
-                  {/* Информация */}
                   <div className="border-b border-gray-100 px-5 py-4">
                     <div className="mb-2 flex h-10 w-10 items-center justify-center overflow-hidden rounded-full bg-primary/10 text-primary">
                       {userPhoto ? (
@@ -478,6 +486,7 @@ export default function Header() {
                     <p className="mt-1 truncate text-xs text-gray-500">
                       {userEmail}
                     </p>
+
                     <button
                       type="button"
                       onClick={() => {
@@ -490,7 +499,6 @@ export default function Header() {
                     </button>
                   </div>
 
-                  {/* Выход */}
                   <button
                     type="button"
                     onClick={handleLogout}
@@ -511,3 +519,4 @@ export default function Header() {
     </>
   );
 }
+

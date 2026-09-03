@@ -7,7 +7,16 @@ import { categories } from "../../data/categories";
 import { CategoryIcon } from "../common/CategoryIcon";
 import Logo from "../common/Logo";
 import ContactModal from "../common/ContactModal";
-import { HomeIcon, GridIcon, ChatIcon, HeartIcon, UserIcon, CloseIcon, ChevronRightIcon, BackIcon } from "../common/Icons";
+import {
+  HomeIcon,
+  GridIcon,
+  ChatIcon,
+  HeartIcon,
+  UserIcon,
+  CloseIcon,
+  ChevronRightIcon,
+  BackIcon,
+} from "../common/Icons";
 
 const NavItem = ({
   label,
@@ -244,6 +253,7 @@ function CatalogModal({ onClose }) {
 
 export default function MobileBottomNav() {
   const location = useLocation();
+  const navigate = useNavigate();
   const { favorites } = useFavorites();
 
   const [contactOpen, setContactOpen] = useState(false);
@@ -253,6 +263,19 @@ export default function MobileBottomNav() {
   const isFavoritesPage = location.pathname === "/favorites";
   const isCatalogPage = location.pathname.startsWith("/category");
   const isProfilePage = location.pathname === "/profile";
+
+  // Профиль: как и в Header — если не залогинен, открываем модалку логина,
+  // а не сразу переходим на /profile (иначе там белый экран без данных юзера).
+  const handleProfileClick = () => {
+    const loggedIn = localStorage.getItem("isLoggedIn") === "true";
+
+    if (loggedIn) {
+      navigate("/profile");
+      return;
+    }
+
+    window.dispatchEvent(new Event("open-profile"));
+  };
 
   return (
     <>
@@ -290,7 +313,12 @@ export default function MobileBottomNav() {
                 )}
               </div>
             </NavItem>
-            <NavItem label="Profil" to="/profile" active={isProfilePage}>
+
+            <NavItem
+              label="Profil"
+              active={isProfilePage}
+              onClick={handleProfileClick}
+            >
               <UserIcon active={isProfilePage} />
             </NavItem>
           </div>
