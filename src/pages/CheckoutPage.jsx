@@ -15,75 +15,9 @@ export default function CheckoutPage() {
 
   const { cart, cartTotal } = useCart();
 
-  // Получаем сохранённые данные
-  const savedData = JSON.parse(sessionStorage.getItem("checkoutData") || "{}");
+  const [paymentMethod, setPaymentMethod] = useState("cash");
+  const [errors, setErrors] = useState({});
 
-  const [formData, setFormData] = useState({
-    name: savedData.name || "",
-    phone: savedData.phone || "",
-    email: savedData.email || "",
-    notes: savedData.notes || "",
-  });
-
-  const [paymentMethod, setPaymentMethod] = useState(
-    savedData.paymentMethod || "cash",
-  );
-
-  // Изменение полей
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-
-    const newData = {
-      ...formData,
-      [name]: value,
-    };
-
-    setFormData(newData);
-
-    // Сохраняем данные
-    sessionStorage.setItem(
-      "checkoutData",
-      JSON.stringify({
-        ...newData,
-        paymentMethod,
-      }),
-    );
-  };
-
-  // Изменение способа оплаты
-  const handlePaymentChange = (e) => {
-    const value = e.target.value;
-
-    setPaymentMethod(value);
-
-    sessionStorage.setItem(
-      "checkoutData",
-      JSON.stringify({
-        ...formData,
-        paymentMethod: value,
-      }),
-    );
-  };
-
-  // Отправка заказа
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    console.log({
-      ...formData,
-      paymentMethod,
-      location,
-      cart,
-      cartTotal,
-    });
-
-    alert("Sifariş uğurla tamamlandı!");
-
-    // После заказа очищаем данные
-    sessionStorage.removeItem("checkoutData");
-  };
-
-  // Пустая корзина
   if (cart.length === 0) {
     return (
       <>
@@ -117,12 +51,90 @@ export default function CheckoutPage() {
     );
   }
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    const formData = new FormData(e.currentTarget);
+
+    const name = formData.get("name")?.trim() || "";
+    const phone = formData.get("phone")?.trim() || "";
+    const email = formData.get("email")?.trim() || "";
+    const notes = formData.get("notes")?.trim() || "";
+
+    const newErrors = {};
+
+    // Имя
+    if (name.length < 2) {
+      newErrors.name = "Ad və soyad ən azı 2 simvol olmalıdır.";
+    } else if (name.length > 60) {
+      newErrors.name = "Ad və soyad 60 simvoldan çox ola bilməz.";
+    }
+
+    // Телефон
+    const cleanPhone = phone.replace(/[\s()-]/g, "");
+
+    const phoneRegex = /^(\+994|0)(50|51|55|70|77|99)\d{7}$/;
+
+    if (!phoneRegex.test(cleanPhone)) {
+      newErrors.phone = "Düzgün Azərbaycan telefon nömrəsi daxil edin.";
+    }
+
+    // Email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!emailRegex.test(email)) {
+      newErrors.email = "Düzgün e-poçt ünvanı daxil edin.";
+    } else if (email.length > 100) {
+      newErrors.email = "E-poçt 100 simvoldan çox ola bilməz.";
+    }
+
+    // Адрес
+    if (!location?.address?.trim()) {
+      newErrors.location = "Çatdırılma ünvanını seçin.";
+    } else if (location.address.length > 250) {
+      newErrors.location = "Ünvan 250 simvoldan çox ola bilməz.";
+    }
+
+    // Комментарий
+    if (notes.length > 500) {
+      newErrors.notes = "Qeyd 500 simvoldan çox ola bilməz.";
+    }
+
+    // Способ оплаты
+    if (!["cash", "card"].includes(paymentMethod)) {
+      newErrors.payment = "Ödəniş üsulunu seçin.";
+    }
+
+    setErrors(newErrors);
+
+    // Если есть ошибки — дальше ничего не делаем
+    if (Object.keys(newErrors).length > 0) {
+      return;
+    }
+
+    const orderData = {
+      name,
+      phone,
+      email,
+      address: location.address,
+      notes,
+      paymentMethod,
+      cart,
+      cartTotal,
+    };
+
+    console.log("Sifariş:", orderData);
+
+    alert("Sifariş uğurla qəbul edildi!");
+  };
+
   return (
     <>
       <Header />
 
       <main className="min-h-screen bg-white py-10 pb-28 md:pb-10">
         <Container>
+          {/* Başlıq */}
           <h1 className="mb-10 text-center text-3xl font-bold text-gray-900 md:text-4xl">
             Sifarişi Tamamla
           </h1>
@@ -131,7 +143,7 @@ export default function CheckoutPage() {
             onSubmit={handleSubmit}
             className="grid items-start gap-6 lg:grid-cols-[minmax(0,2fr)_minmax(350px,1fr)]"
           >
-            {/* SOL TƏRƏF */}
+            {/* Sol tərəf */}
             <section className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm md:p-10">
               <h2 className="mb-8 text-2xl font-bold text-gray-900 md:text-3xl">
                 Çatdırılma Məlumatları
@@ -151,12 +163,16 @@ export default function CheckoutPage() {
                     id="name"
                     name="name"
                     type="text"
-                    value={formData.name}
-                    onChange={handleChange}
-                    required
+                    maxLength={60}
                     placeholder="Adınızı və Soyadınızı daxil edin"
-                    className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm text-gray-700 outline-none transition focus:border-primary focus:ring-1 focus:ring-primary"
+                    className={`w-full rounded-xl border px-4 py-3 text-sm text-gray-700 outline-none transition focus:border-primary focus:ring-1 focus:ring-primary ${
+                      errors.name ? "border-red-400" : "border-gray-200"
+                    }`}
                   />
+
+                  {errors.name && (
+                    <p className="mt-1 text-sm text-red-500">{errors.name}</p>
+                  )}
                 </div>
 
                 <div>
@@ -171,12 +187,16 @@ export default function CheckoutPage() {
                     id="phone"
                     name="phone"
                     type="tel"
-                    value={formData.phone}
-                    onChange={handleChange}
-                    required
+                    maxLength={20}
                     placeholder="Telefon nömrənizi daxil edin"
-                    className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm text-gray-700 outline-none transition focus:border-primary focus:ring-1 focus:ring-primary"
+                    className={`w-full rounded-xl border px-4 py-3 text-sm text-gray-700 outline-none transition focus:border-primary focus:ring-1 focus:ring-primary ${
+                      errors.phone ? "border-red-400" : "border-gray-200"
+                    }`}
                   />
+
+                  {errors.phone && (
+                    <p className="mt-1 text-sm text-red-500">{errors.phone}</p>
+                  )}
                 </div>
               </div>
 
@@ -193,21 +213,31 @@ export default function CheckoutPage() {
                   id="email"
                   name="email"
                   type="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  required
+                  maxLength={100}
                   placeholder="E-poçt ünvanınızı daxil edin"
-                  className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm text-gray-700 outline-none transition focus:border-primary focus:ring-1 focus:ring-primary"
+                  className={`w-full rounded-xl border px-4 py-3 text-sm text-gray-700 outline-none transition focus:border-primary focus:ring-1 focus:ring-primary ${
+                    errors.email ? "border-red-400" : "border-gray-200"
+                  }`}
                 />
+
+                {errors.email && (
+                  <p className="mt-1 text-sm text-red-500">{errors.email}</p>
+                )}
               </div>
 
-              {/* Адрес */}
+              {/* Ünvan */}
               <div className="mt-6">
                 <label className="mb-2 block text-sm font-medium text-gray-900">
                   Çatdırılma ünvanı
                 </label>
 
-                <div className="flex items-center justify-between gap-4 rounded-xl border border-gray-200 bg-gray-50/50 px-4 py-3 transition hover:border-gray-300">
+                <div
+                  className={`flex items-center justify-between gap-4 rounded-xl border bg-gray-50/50 px-4 py-3 transition ${
+                    errors.location
+                      ? "border-red-400"
+                      : "border-gray-200 hover:border-gray-300"
+                  }`}
+                >
                   <div className="flex min-w-0 items-center gap-3">
                     <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
                       <LocationIcon className="h-5 w-5" />
@@ -245,6 +275,10 @@ export default function CheckoutPage() {
                     {location ? "Dəyiş" : "Məkanı seç"}
                   </Link>
                 </div>
+
+                {errors.location && (
+                  <p className="mt-1 text-sm text-red-500">{errors.location}</p>
+                )}
               </div>
 
               {/* Qeydlər */}
@@ -259,12 +293,17 @@ export default function CheckoutPage() {
                 <textarea
                   id="notes"
                   name="notes"
-                  value={formData.notes}
-                  onChange={handleChange}
                   rows="4"
+                  maxLength={500}
                   placeholder="Sifarişiniz haqqında əlavə qeydlər (istəyə bağlı)"
-                  className="w-full resize-none rounded-xl border border-gray-200 px-4 py-3 text-sm text-gray-700 outline-none transition focus:border-primary focus:ring-1 focus:ring-primary"
+                  className={`w-full resize-none rounded-xl border px-4 py-3 text-sm text-gray-700 outline-none transition focus:border-primary focus:ring-1 focus:ring-primary ${
+                    errors.notes ? "border-red-400" : "border-gray-200"
+                  }`}
                 />
+
+                {errors.notes && (
+                  <p className="mt-1 text-sm text-red-500">{errors.notes}</p>
+                )}
               </div>
 
               {/* Ödəniş */}
@@ -286,7 +325,7 @@ export default function CheckoutPage() {
                     name="payment"
                     value="cash"
                     checked={paymentMethod === "cash"}
-                    onChange={handlePaymentChange}
+                    onChange={(e) => setPaymentMethod(e.target.value)}
                     className="h-5 w-5 accent-primary"
                   />
 
@@ -314,7 +353,7 @@ export default function CheckoutPage() {
                     name="payment"
                     value="card"
                     checked={paymentMethod === "card"}
-                    onChange={handlePaymentChange}
+                    onChange={(e) => setPaymentMethod(e.target.value)}
                     className="h-5 w-5 accent-primary"
                   />
 
@@ -330,6 +369,11 @@ export default function CheckoutPage() {
                   </div>
                 </label>
 
+                {errors.payment && (
+                  <p className="mt-3 text-sm text-red-500">{errors.payment}</p>
+                )}
+
+                {/* Sifariş */}
                 <button
                   type="submit"
                   className="mt-7 w-full rounded-xl bg-primary px-5 py-3.5 text-base font-bold text-white transition hover:opacity-90"
@@ -339,7 +383,7 @@ export default function CheckoutPage() {
               </div>
             </section>
 
-            {/* SAĞ TƏRƏF */}
+            {/* Sağ tərəf */}
             <aside className="h-fit rounded-2xl border border-gray-200 bg-white p-6 shadow-sm lg:sticky lg:top-24">
               <h2 className="mb-6 text-2xl font-bold text-gray-900">
                 Sifariş Xülasəsi
@@ -348,6 +392,7 @@ export default function CheckoutPage() {
               <div className="space-y-5">
                 {cart.map((item) => (
                   <div key={item.id} className="flex items-center gap-4">
+                    {/* Şəkil */}
                     <div className="flex h-14 w-14 shrink-0 items-center justify-center">
                       {item.images?.length && (
                         <img
@@ -358,6 +403,7 @@ export default function CheckoutPage() {
                       )}
                     </div>
 
+                    {/* Məlumat */}
                     <div className="min-w-0 flex-1">
                       <Link
                         to={`/product/${item.id}`}
@@ -366,11 +412,14 @@ export default function CheckoutPage() {
                         {item.title}
                       </Link>
 
-                      <div className="mt-1 text-sm text-gray-500">
-                        {item.quantity} x {item.price.toFixed(2)} ₼
+                      <div className="mt-1 flex items-center gap-2 text-sm text-gray-500">
+                        <span>
+                          {item.quantity} x {item.price.toFixed(2)} ₼
+                        </span>
                       </div>
                     </div>
 
+                    {/* Qiymət */}
                     <span className="shrink-0 text-sm font-bold text-red-600">
                       {(item.price * item.quantity).toFixed(2)} ₼
                     </span>
@@ -378,8 +427,10 @@ export default function CheckoutPage() {
                 ))}
               </div>
 
+              {/* Xətt */}
               <div className="my-6 border-t border-gray-200" />
 
+              {/* Ümumi qiymət */}
               <div className="flex items-center justify-between text-lg">
                 <span className="font-bold text-gray-900">Ümumi Qiymət:</span>
 
@@ -388,6 +439,7 @@ export default function CheckoutPage() {
                 </span>
               </div>
 
+              {/* Səbətə qayıt */}
               <button
                 type="button"
                 onClick={() => navigate("/cart")}
