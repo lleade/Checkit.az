@@ -20,7 +20,7 @@ function ContactCard() {
         <div className="flex min-w-0 items-center gap-3">
           <PhoneIcon />
           <span className="truncate text-sm font-medium text-gray-900">
-            Meneçer
+            Menecer
           </span>
         </div>
 
@@ -58,7 +58,7 @@ function ContactCard() {
 
           <div className="flex min-w-0 flex-col leading-tight">
             <span className="truncate text-sm font-medium text-gray-900">
-              Meneçer
+              Menecer
             </span>
 
             <span className="truncate text-xs text-gray-500">
