@@ -263,9 +263,6 @@ export default function MobileBottomNav() {
   const isFavoritesPage = location.pathname === "/favorites";
   const isCatalogPage = location.pathname.startsWith("/category");
   const isProfilePage = location.pathname === "/profile";
-
-  // Профиль: как и в Header — если не залогинен, открываем модалку логина,
-  // а не сразу переходим на /profile (иначе там белый экран без данных юзера).
   const handleProfileClick = () => {
     const loggedIn = localStorage.getItem("isLoggedIn") === "true";
 

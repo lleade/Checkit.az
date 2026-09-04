@@ -1,14 +1,11 @@
 import { Link } from "react-router-dom";
-
 import Header from "../components/layout/Header";
 import Footer from "../components/layout/Footer";
 import Container from "../components/container/Container";
 import MobileBottomNav from "../components/layout/MobileBottomNav";
 import { footerCategories, footerLinks } from "../data/footer";
 import { BookmarkIcon } from "../components/common/Icons";
-
 import ProductCard from "../components/products/ProductCard";
-
 import { useFavorites } from "../context/FavoritesContext";
 
 export default function Favorites() {

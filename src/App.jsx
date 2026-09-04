@@ -1,5 +1,4 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-
 import Home from "./pages/Home";
 import ProductPage from "./pages/ProductPage";
 import Favorites from "./pages/FavoritesPage";
@@ -16,7 +15,6 @@ import BlogPage from "./pages/BlogPage";
 import AboutPage from "./pages/AboutPage";
 import FAQPage from "./pages/FAQPage";
 import NotFoundPage from "./pages/NotFoundPage";
-
 import ScrollToTop from "./components/common/ScrollToTop";
 import PageLoader from "./components/ui/PageLoader";
 
@@ -67,12 +65,16 @@ export default function App() {
         {/* Списки товаров */}
         <Route path="/products/:filterType" element={<ProductsPage />} />
 
+        {/* Блог */}
         <Route path="/blog/:id" element={<BlogPage />} />
 
+        {/* Про нас */}
         <Route path="/haqqimizda" element={<AboutPage />} />
 
+        {/* Часто задаваемые вопросы */}
         <Route path="/faq" element={<FAQPage />} />
 
+        {/* 404 страница */}
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </BrowserRouter>

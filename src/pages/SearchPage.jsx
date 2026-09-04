@@ -1,22 +1,17 @@
 import { useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
-
 import Header from "../components/layout/Header";
 import Footer from "../components/layout/Footer";
 import MobileBottomNav from "../components/layout/MobileBottomNav";
 import Container from "../components/container/Container";
 import ProductCard from "../components/products/ProductCard";
 import Breadcrumbs from "../components/common/Breadcrumbs";
-
 import { footerCategories, footerLinks } from "../data/footer";
-
 import { useProducts } from "../context/ProductsContext";
 
 export default function SearchPage() {
   const [searchParams] = useSearchParams();
-
   const query = searchParams.get("q")?.trim() ?? "";
-
   const { products, loading, error } = useProducts();
 
   const results = useMemo(() => {

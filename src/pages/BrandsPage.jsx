@@ -1,29 +1,20 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-
 import Header from "../components/layout/Header";
 import Footer from "../components/layout/Footer";
 import MobileBottomNav from "../components/layout/MobileBottomNav";
 import Container from "../components/container/Container";
 import Pagination from "../components/common/Pagination";
-
 import { brands } from "../data/brands";
 import { footerCategories, footerLinks } from "../data/footer";
 
 export default function BrandsPage() {
   const navigate = useNavigate();
-
   const [currentPage, setCurrentPage] = useState(1);
-
-  // 24 бренда на одной странице
   const brandsPerPage = 24;
-
   const totalPages = Math.ceil(brands.length / brandsPerPage);
-
   const startIndex = (currentPage - 1) * brandsPerPage;
-
   const currentBrands = brands.slice(startIndex, startIndex + brandsPerPage);
-
   const handlePageChange = (page) => {
     setCurrentPage(page);
 

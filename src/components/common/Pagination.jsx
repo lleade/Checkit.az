@@ -1,8 +1,12 @@
 import { ArrowLeft } from "./Icons";
+
 export default function Pagination({ currentPage, totalPages, onPageChange }) {
   if (totalPages <= 1) return null;
+  // Если страница всего одна, пагинация не нужна — ничего не показываем
 
   const getPageNumbers = () => {
+    // Функция формирует номера страниц, которые будут показаны
+
     const pages = [];
     const maxVisible = 5;
 
@@ -38,11 +42,13 @@ export default function Pagination({ currentPage, totalPages, onPageChange }) {
   };
 
   const pageNumbers = getPageNumbers();
+  // Вызываем функцию и получаем готовые номера страниц
 
   return (
     <nav className="mt-10 flex flex-wrap items-center justify-center gap-2">
-      {/* Previous */}
       {currentPage > 1 && (
+        // Кнопка "Предыдущая" показывается только если мы не на первой странице
+
         <button
           type="button"
           onClick={() => onPageChange(currentPage - 1)}
@@ -65,6 +71,8 @@ export default function Pagination({ currentPage, totalPages, onPageChange }) {
           page === "..." ? (
             <span
               key={`ellipsis-${index}`}
+              // Уникальный key для каждого многоточия
+
               className="flex h-11 min-w-10 items-center justify-center text-sm font-semibold text-gray-400"
             >
               ...
@@ -81,7 +89,10 @@ export default function Pagination({ currentPage, totalPages, onPageChange }) {
           ${
             page === currentPage
               ? "border-primary bg-primary text-white shadow-md shadow-primary/20"
-              : "border-gray-200 bg-white text-gray-700 shadow-sm hover:border-primary/30 hover:bg-gray-50 hover:text-primary hover:shadow-md"
+              : // Если это текущая страница — выделяем её
+
+                "border-gray-200 bg-white text-gray-700 shadow-sm hover:border-primary/30 hover:bg-gray-50 hover:text-primary hover:shadow-md"
+            // Если это другая страница — обычный стиль
           }
         `}
             >

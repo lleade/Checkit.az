@@ -7,12 +7,10 @@ import AboutSection from "../components/layout/AboutSection";
 import SocialBar from "../components/layout/SocialBar";
 import Footer from "../components/layout/Footer";
 import MobileBottomNav from "../components/layout/MobileBottomNav";
-
 import { blogs } from "../data/blogs";
 import { footerCategories, footerLinks } from "../data/footer";
 import { categories } from "../data/categories";
 import { brands } from "../data/brands";
-
 import { useProducts } from "../context/ProductsContext";
 
 function HeroSkeleton() {

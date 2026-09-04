@@ -3,7 +3,12 @@ import { motion } from "framer-motion";
 import { useFavorites } from "../../context/FavoritesContext";
 import { useCart } from "../../context/CartContext";
 
-import { BookmarkIcon, CartIcon, CloseIcon, ImageAltIcon } from "../common/Icons";
+import {
+  BookmarkIcon,
+  CartIcon,
+  CloseIcon,
+  ImageAltIcon,
+} from "../common/Icons";
 export default function ProductCard({ product, animateImmediately = false }) {
   const { title, specs, price, originalPrice, discount } = product;
 

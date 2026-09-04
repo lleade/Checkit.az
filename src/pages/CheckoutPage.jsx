@@ -1,14 +1,11 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
-
 import Header from "../components/layout/Header";
 import Footer from "../components/layout/Footer";
 import Container from "../components/container/Container";
 import MobileBottomNav from "../components/layout/MobileBottomNav";
 import { LocationIcon } from "../components/common/Icons";
-
 import { footerCategories, footerLinks } from "../data/footer";
-
 import { useCart } from "../context/CartContext";
 import { useLocationContext } from "../context/LocationContext";
 

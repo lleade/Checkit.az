@@ -1,12 +1,10 @@
 import { useMemo, useRef, useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-
 import Logo from "../common/Logo";
 import Container from "../container/Container";
 import CategorySidebar from "../hero/CategorySidebar";
 import ContactModal from "../common/ContactModal";
 import ProfileModal from "../common/ProfileModal";
-
 import {
   CategoriesIcon,
   SearchIcon,
@@ -16,7 +14,6 @@ import {
   UserIcon,
   LogoutIcon,
 } from "../common/Icons";
-
 import { categories } from "../../data/categories";
 import { useProducts } from "../../context/ProductsContext";
 import { useFavorites } from "../../context/FavoritesContext";
@@ -71,7 +68,7 @@ export default function Header() {
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
 
   const [isLoggedIn, setIsLoggedIn] = useState(
-    localStorage.getItem("isLoggedIn") === "true"
+    localStorage.getItem("isLoggedIn") === "true",
   );
 
   const [userEmail, setUserEmail] = useState("");
@@ -225,7 +222,7 @@ export default function Header() {
   };
 
   // =========================
-  // ПРОФИЛЬ
+  //        ПРОФИЛЬ
   // =========================
 
   const handleProfileClick = () => {
@@ -519,4 +516,3 @@ export default function Header() {
     </>
   );
 }
-

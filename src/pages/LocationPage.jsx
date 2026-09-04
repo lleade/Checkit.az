@@ -1,9 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { MapContainer, TileLayer, Marker, useMapEvents } from "react-leaflet";
-
 import "leaflet/dist/leaflet.css";
-
 import { useLocationContext } from "../context/LocationContext";
 
 function LocationMarker({ position, setPosition }) {

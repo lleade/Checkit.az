@@ -2,7 +2,6 @@ import Header from "../components/layout/Header";
 import Footer from "../components/layout/Footer";
 import MobileBottomNav from "../components/layout/MobileBottomNav";
 import Container from "../components/container/Container";
-
 import { footerCategories, footerLinks } from "../data/footer";
 
 export default function AboutPage() {
@@ -268,10 +267,7 @@ export default function AboutPage() {
         </Container>
       </main>
 
-      <Footer
-        categories={footerCategories}
-        links={footerLinks}
-      />
+      <Footer categories={footerCategories} links={footerLinks} />
 
       <MobileBottomNav />
     </div>

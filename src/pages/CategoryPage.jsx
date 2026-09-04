@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
-
 import Header from "../components/layout/Header";
 import Footer from "../components/layout/Footer";
 import Container from "../components/container/Container";
@@ -14,16 +13,13 @@ import {
   ChevronDownIcon,
   CloseIcon,
 } from "../components/common/Icons";
-
 import { getFilterValue } from "../data/filterExtractors";
 import { categoryFilters } from "../data/filters";
 import { categories } from "../data/categories";
 import { footerCategories, footerLinks } from "../data/footer";
-
 import { useProducts } from "../context/ProductsContext";
 
 const PRODUCTS_PER_PAGE = 20;
-
 const sortLabels = {
   "price-desc": "Bahadan ucuza",
   "price-asc": "Ucuzdan bahaya",
@@ -32,32 +28,22 @@ const sortLabels = {
 
 export default function CategoryPage() {
   const { categorySlug, subcategorySlug } = useParams();
-
   const { products, loading, error } = useProducts();
-
   const [selectedFilters, setSelectedFilters] = useState({});
-
   const [priceRange, setPriceRange] = useState({
     min: "",
     max: "",
   });
-
   const [sortOption, setSortOption] = useState("price-desc");
-
   const [currentPage, setCurrentPage] = useState(1);
-
   const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false);
-
   const [isSortOpen, setIsSortOpen] = useState(false);
-
   const category = categories.find((item) => item.slug === categorySlug);
-
   const subcategory = subcategorySlug
     ? category?.subcategories.find((item) => item.slug === subcategorySlug)
     : null;
 
   const filterConfig = categoryFilters[categorySlug] || [];
-
   const subcategoryNameMap = useMemo(() => {
     if (!category) return {};
 
@@ -65,7 +51,6 @@ export default function CategoryPage() {
       category.subcategories.map((sub) => [sub.slug, sub.name]),
     );
   }, [category]);
-
   const relevantSlugs = useMemo(() => {
     if (!category) return [];
 
@@ -75,7 +60,6 @@ export default function CategoryPage() {
 
     return category.subcategories.map((item) => item.slug);
   }, [category, subcategorySlug]);
-
   const baseProducts = useMemo(() => {
     return products.filter((product) =>
       relevantSlugs.includes(product.category),
@@ -132,13 +116,7 @@ export default function CategoryPage() {
 
   useEffect(() => {
     setCurrentPage(1);
-  }, [
-    selectedFilters,
-    priceRange,
-    sortOption,
-    categorySlug,
-    subcategorySlug,
-  ]);
+  }, [selectedFilters, priceRange, sortOption, categorySlug, subcategorySlug]);
 
   useEffect(() => {
     if (currentPage > totalPages) {
@@ -509,9 +487,7 @@ export default function CategoryPage() {
           <div className="absolute left-0 top-0 flex h-full w-[min(380px,90vw)] flex-col bg-white shadow-2xl">
             {/* Drawer Header */}
             <div className="flex shrink-0 items-center justify-between border-b border-gray-200 px-5 py-4">
-              <h2 className="text-lg font-semibold text-gray-900">
-                Filtrlər
-              </h2>
+              <h2 className="text-lg font-semibold text-gray-900">Filtrlər</h2>
 
               <button
                 type="button"
@@ -544,4 +520,3 @@ export default function CategoryPage() {
     </>
   );
 }
-

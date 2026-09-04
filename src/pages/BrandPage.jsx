@@ -1,14 +1,11 @@
 import { useParams } from "react-router-dom";
-
 import Header from "../components/layout/Header";
 import Footer from "../components/layout/Footer";
 import MobileBottomNav from "../components/layout/MobileBottomNav";
 import Container from "../components/container/Container";
 import ProductCard from "../components/products/ProductCard";
-
 import { brands } from "../data/brands";
 import { footerCategories, footerLinks } from "../data/footer";
-
 import { useProducts } from "../context/ProductsContext";
 
 export default function BrandPage() {
@@ -20,8 +17,7 @@ export default function BrandPage() {
 
   const brandProducts = brand
     ? products.filter(
-        (product) =>
-          product.brand?.toLowerCase() === brand.name.toLowerCase(),
+        (product) => product.brand?.toLowerCase() === brand.name.toLowerCase(),
       )
     : [];
 
@@ -32,9 +28,7 @@ export default function BrandPage() {
       <main className="min-h-screen bg-gray-50 py-8 lg:py-12">
         <Container>
           {loading ? (
-            <div className="py-20 text-center text-gray-500">
-              Yüklənir...
-            </div>
+            <div className="py-20 text-center text-gray-500">Yüklənir...</div>
           ) : !brand ? (
             <div className="rounded-2xl bg-white py-20 text-center shadow-sm">
               <h1 className="text-2xl font-bold text-gray-900">
@@ -68,10 +62,7 @@ export default function BrandPage() {
               {brandProducts.length > 0 ? (
                 <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
                   {brandProducts.map((product) => (
-                    <ProductCard
-                      key={product.id}
-                      product={product}
-                    />
+                    <ProductCard key={product.id} product={product} />
                   ))}
                 </div>
               ) : (
@@ -90,13 +81,9 @@ export default function BrandPage() {
         </Container>
       </main>
 
-      <Footer
-        categories={footerCategories}
-        links={footerLinks}
-      />
+      <Footer categories={footerCategories} links={footerLinks} />
 
       <MobileBottomNav />
     </>
   );
 }
-

@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-
 import Header from "../components/layout/Header";
 import Footer from "../components/layout/Footer";
 import MobileBottomNav from "../components/layout/MobileBottomNav";
@@ -12,10 +11,8 @@ import {
   ArrowRight,
   BookmarkIcon,
 } from "../components/common/Icons";
-
 import { categories } from "../data/categories";
 import { footerCategories, footerLinks } from "../data/footer";
-
 import { useProducts } from "../context/ProductsContext";
 import { useFavorites } from "../context/FavoritesContext";
 import { useCart } from "../context/CartContext";
@@ -171,16 +168,12 @@ function ProductPageSkeleton() {
 
 export default function ProductPage() {
   const { id } = useParams();
-
   const { products, loading: productsLoading } = useProducts();
-
   const { addToCart } = useCart();
   const { favorites, toggleFavorite } = useFavorites();
-
   const [selectedImage, setSelectedImage] = useState(0);
   const [showDescription, setShowDescription] = useState(false);
   const [showSpecifications, setShowSpecifications] = useState(false);
-
   const product = products.find((item) => Number(item.id) === Number(id));
 
   useEffect(() => {
@@ -193,7 +186,6 @@ export default function ProductPage() {
     (item) => Number(item.id) === Number(product?.id),
   );
 
-  // Skeleton вместо "Yüklənir..."
   if (productsLoading) {
     return <ProductPageSkeleton />;
   }

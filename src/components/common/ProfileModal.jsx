@@ -1,77 +1,78 @@
 import { useEffect, useState } from "react";
 
 export default function ProfileModal({ onClose }) {
-  const [isLogin, setIsLogin] = useState(false);
+  // onClose — функция для закрытия модального окна
 
+  const [isLogin, setIsLogin] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
   useEffect(() => {
     const handleEscape = (e) => {
       if (e.key === "Escape") {
+        // Проверяем, была ли нажата Escape
+
         onClose();
       }
     };
 
     document.addEventListener("keydown", handleEscape);
-
     return () => {
       document.removeEventListener("keydown", handleEscape);
     };
   }, [onClose]);
 
   useEffect(() => {
-    document.body.style.overflow = "hidden";
+    // Второй useEffect отвечает за прокрутку страницы
 
+    document.body.style.overflow = "hidden";
     return () => {
       document.body.style.overflow = "";
     };
   }, []);
 
   const handleSubmit = (e) => {
-    e.preventDefault();
+    // Функция обработки отправки формы
 
+    e.preventDefault();
     setError("");
     setSuccess("");
-
     const cleanEmail = email.trim().toLowerCase();
+    // Убираем лишние пробелы из email
 
     // =========================
-    // РЕГИСТРАЦИЯ
+    //       РЕГИСТРАЦИЯ
     // =========================
 
     if (!isLogin) {
-      // Получаем всех пользователей
+      // Если isLogin = false, выполняем регистрацию
+
       const savedUsers = localStorage.getItem("users");
-
       const users = savedUsers ? JSON.parse(savedUsers) : [];
+      // Если пользователи есть — превращаем JSON обратно в массив
+      // Если пользователей нет — создаём пустой массив
 
-      // Проверяем, есть ли такой email
-      const existingUser = users.find(
-        (user) => user.email === cleanEmail
-      );
+      const existingUser = users.find((user) => user.email === cleanEmail);
+      // find ищет пользователя с таким email
 
       if (existingUser) {
+        // Если пользователь с таким email уже существует
+
         setError("Bu e-poçt artıq qeydiyyatdan keçib");
         return;
       }
 
-      // Создаём нового пользователя
       const newUser = {
         email: cleanEmail,
         password: password,
       };
 
-      // Добавляем пользователя в массив
       users.push(newUser);
 
       // Сохраняем всех пользователей
       localStorage.setItem("users", JSON.stringify(users));
-
-      // Авторизуем нового пользователя
       localStorage.setItem("user", JSON.stringify(newUser));
       localStorage.setItem("isLoggedIn", "true");
 
@@ -85,33 +86,32 @@ export default function ProfileModal({ onClose }) {
     }
 
     // =========================
-    // ВХОД
+    //           ВХОД
     // =========================
 
     const savedUsers = localStorage.getItem("users");
 
     if (!savedUsers) {
+      // Если пользователей вообще нет
+
       setError("İlk öncə qeydiyyatdan keçin");
       return;
     }
 
     const users = JSON.parse(savedUsers);
-
-    // Ищем пользователя
     const user = users.find(
-      (user) =>
-        user.email === cleanEmail &&
-        user.password === password
+      (user) => user.email === cleanEmail && user.password === password,
     );
+    // Ищем пользователя,
+    // у которого совпадают email И пароль
 
-    // Если пользователь не найден
     if (!user) {
       setError("E-poçt və ya şifrə yanlışdır");
       return;
     }
 
-    // Авторизация
     localStorage.setItem("user", JSON.stringify(user));
+
     localStorage.setItem("isLoggedIn", "true");
 
     setSuccess("Uğurla daxil oldunuz!");
@@ -122,8 +122,9 @@ export default function ProfileModal({ onClose }) {
   };
 
   const switchMode = () => {
-    setIsLogin(!isLogin);
+    // Функция переключения между входом и регистрацией
 
+    setIsLogin(!isLogin);
     setEmail("");
     setPassword("");
     setError("");
@@ -134,7 +135,10 @@ export default function ProfileModal({ onClose }) {
     <div
       className="fixed inset-0 z-[999] flex items-center justify-center bg-gray-900/50 px-4 backdrop-blur-[1px]"
       onMouseDown={(e) => {
+        // Обрабатываем нажатие мыши
+
         if (e.target === e.currentTarget) {
+          // Проверяем, что клик был именно по фону
           onClose();
         }
       }}
@@ -200,16 +204,12 @@ export default function ProfileModal({ onClose }) {
 
           {/* Ошибка */}
           {error && (
-            <p className="mb-5 text-center text-sm text-red-500">
-              {error}
-            </p>
+            <p className="mb-5 text-center text-sm text-red-500">{error}</p>
           )}
 
           {/* Успех */}
           {success && (
-            <p className="mb-5 text-center text-sm text-green-600">
-              {success}
-            </p>
+            <p className="mb-5 text-center text-sm text-green-600">{success}</p>
           )}
 
           {/* Кнопка */}
@@ -227,12 +227,9 @@ export default function ProfileModal({ onClose }) {
           onClick={switchMode}
           className="mt-6 block w-full cursor-pointer text-center text-[15px] font-medium text-primary hover:underline"
         >
-          {isLogin
-            ? "Qeydiyyatdan keç"
-            : "Mənim hesabım var"}
+          {isLogin ? "Qeydiyyatdan keç" : "Mənim hesabım var"}
         </button>
       </div>
     </div>
   );
 }
-

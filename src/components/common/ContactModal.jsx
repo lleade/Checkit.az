@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { motion } from "framer-motion";
-
 import { PhoneIcon, EmailIcon, WhatsAppIcon, MessageIcon } from "./Icons";
+
 function ContactCard() {
   return (
     <div className="overflow-hidden rounded-2xl bg-white shadow-2xl ring-1 ring-black/5">
@@ -19,7 +19,6 @@ function ContactCard() {
       >
         <div className="flex min-w-0 items-center gap-3">
           <PhoneIcon />
-
           <span className="truncate text-sm font-medium text-gray-900">
             Meneçer
           </span>
@@ -37,7 +36,6 @@ function ContactCard() {
       >
         <div className="flex min-w-0 items-center gap-3">
           <EmailIcon />
-
           <span className="truncate text-sm font-medium text-gray-900">
             E-mail
           </span>
@@ -81,7 +79,6 @@ function ContactCard() {
       >
         <div className="flex min-w-0 items-center gap-3">
           <MessageIcon />
-
           <span className="truncate text-sm font-medium text-gray-700">
             Mesaj
           </span>
@@ -96,26 +93,36 @@ function ContactCard() {
 }
 
 function ContactModal({ onClose }) {
+  // Она закрывает модальное окно
+
   useEffect(() => {
+    // Выполняем код после появления компонента
+
     const handleResize = () => {
       if (window.innerWidth >= 768) {
+        // 768px и больше считаем desktop-версией
+
         onClose();
+        // Если перешли на desktop — закрываем мобильное окно
       }
     };
 
     window.addEventListener("resize", handleResize);
-
     return () => {
       window.removeEventListener("resize", handleResize);
     };
   }, [onClose]);
+  // useEffect будет зависеть от функции onClose
 
   return (
     <>
       {/* ================= MOBILE ================= */}
+
       <motion.div
         className="fixed inset-0 z-[100] bg-black/25 backdrop-blur-[2px] md:hidden"
         onClick={onClose}
+        // Нажатие на затемнённый фон закрывает окно
+
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
@@ -129,11 +136,14 @@ function ContactModal({ onClose }) {
           exit={{ y: "100%" }}
           transition={{
             type: "spring",
+
             stiffness: 320,
+
             damping: 30,
           }}
         >
           <ContactCard />
+          {/* Показываем карточку контактов */}
 
           <button
             type="button"
@@ -146,6 +156,7 @@ function ContactModal({ onClose }) {
       </motion.div>
 
       {/* ================= DESKTOP ================= */}
+
       <motion.div
         className="absolute right-0 top-full z-[100] hidden w-72 pt-3 md:block"
         initial={{ opacity: 0, y: -8 }}

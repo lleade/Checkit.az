@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { getFilterValue } from "../../data/filterExtractors";
-
 import { ChevronDownIcon } from "../common/Icons";
+
 export default function CategoryFilters({
   products = [],
   filterConfig = [],
@@ -11,15 +11,17 @@ export default function CategoryFilters({
   priceRange = { min: "", max: "" },
   setPriceRange,
 }) {
+  // какой именно фильтрсейчас раскрыт (только один одновременно)
   const [openFilter, setOpenFilter] = useState(null);
 
-  // Строим значения только по ключам из конфига текущей категории
   const filters = {};
 
+  // создаём пустой Set под каждый ключ фильтра (brand, color и т.д.)
   filterConfig.forEach(({ key }) => {
     filters[key] = new Set();
   });
 
+  // проходим по всем товарам и для каждого ключа фильтра достаём значение
   products.forEach((product) => {
     filterConfig.forEach(({ key }) => {
       const value = getFilterValue(product, key);
@@ -27,6 +29,7 @@ export default function CategoryFilters({
     });
   });
 
+  // добавить/убрать значение из выбранных фильтров (чекбокс тоггл)
   const handleFilterChange = (filterName, value) => {
     setSelectedFilters((prev) => {
       const currentValues = prev[filterName] || [];
@@ -37,10 +40,12 @@ export default function CategoryFilters({
     });
   };
 
+  // изменение поля "Min" или "Max" в цене
   const handlePriceChange = (field) => (e) => {
     setPriceRange((prev) => ({ ...prev, [field]: e.target.value }));
   };
 
+  // сброс всех фильтров и цены к исходному состоянию
   const resetFilters = () => {
     setSelectedFilters({});
     setPriceRange({ min: "", max: "" });
@@ -49,7 +54,7 @@ export default function CategoryFilters({
 
   return (
     <aside className="w-full">
-      {/* Price — без изменений */}
+      {/* Блок "Цена" — два инпута, min и max, всегда видимые */}
       <div className="rounded-2xl border border-gray-200 bg-white p-5">
         <h3 className="mb-5 text-lg font-semibold text-gray-900">
           Qiymət Aralığı
@@ -78,12 +83,15 @@ export default function CategoryFilters({
         </div>
       </div>
 
-      {/* Dynamic filters — теперь по filterConfig */}
+      {/* Динамические фильтры — генерируются из filterConfig */}
       <div className="mt-2 rounded-2xl border border-gray-200 bg-white px-5">
         {filterConfig.map(({ key: filterName, title }) => {
           const values = filters[filterName];
+
+          // если у этого фильтра нет ни одного значения — не рисуем блок вообще
           if (!values || values.size === 0) return null;
 
+          // раскрыт ли именно этот фильтр сейчас
           const isOpen = openFilter === filterName;
 
           return (
@@ -91,6 +99,7 @@ export default function CategoryFilters({
               key={filterName}
               className="border-b border-gray-200 last:border-b-0"
             >
+              {/* Заголовок: клик открывает/закрывает список значений */}
               <button
                 type="button"
                 onClick={() => setOpenFilter(isOpen ? null : filterName)}
@@ -99,15 +108,22 @@ export default function CategoryFilters({
                 <span className="text-sm font-semibold tracking-wide text-gray-800">
                   {title}
                 </span>
-                <ChevronDownIcon className={`h-5 w-5 text-gray-500 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`} />
+                <ChevronDownIcon
+                  className={`h-5 w-5 text-gray-500 transition-transform duration-200 ${
+                    isOpen ? "rotate-180" : ""
+                  }`}
+                />
               </button>
 
+              {/* Список значений рендерим только когдап открыто */}
               {isOpen && (
                 <div className="max-h-64 overflow-y-auto pb-4">
                   {[...values].sort().map((value) => {
                     const isChecked =
                       selectedFilters[filterName]?.includes(value) ?? false;
 
+                    // для подкатегорий показываем человекочитаемое имя,
+                    // для остальных фильтров — само значение как есть
                     const label =
                       filterName === "subcategory"
                         ? subcategoryNameMap[value] || value
@@ -135,7 +151,7 @@ export default function CategoryFilters({
         })}
       </div>
 
-      {/* Reset — без изменений */}
+      {/* Кнопка сброса всех фильтров */}
       <div className="mt-2 rounded-2xl border border-gray-200 bg-white p-2">
         <button
           type="button"

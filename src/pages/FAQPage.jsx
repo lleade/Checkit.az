@@ -3,7 +3,6 @@ import Footer from "../components/layout/Footer";
 import MobileBottomNav from "../components/layout/MobileBottomNav";
 import Container from "../components/container/Container";
 import Breadcrumbs from "../components/common/Breadcrumbs";
-
 import { footerCategories, footerLinks } from "../data/footer";
 
 const faqSections = [

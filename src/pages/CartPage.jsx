@@ -1,11 +1,15 @@
 import { Link } from "react-router-dom";
-
 import Header from "../components/layout/Header";
 import Footer from "../components/layout/Footer";
 import Container from "../components/container/Container";
 import MobileBottomNav from "../components/layout/MobileBottomNav";
 import { footerCategories, footerLinks } from "../data/footer";
-import { MinusIcon, PlusIcon, TrashIcon, CartIcon } from "../components/common/Icons";
+import {
+  MinusIcon,
+  PlusIcon,
+  TrashIcon,
+  CartIcon,
+} from "../components/common/Icons";
 
 import { useCart } from "../context/CartContext";
 

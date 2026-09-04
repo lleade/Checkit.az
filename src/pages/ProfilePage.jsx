@@ -1,12 +1,17 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-
 import Header from "../components/layout/Header";
 import Footer from "../components/layout/Footer";
 import MobileBottomNav from "../components/layout/MobileBottomNav";
 import Container from "../components/container/Container";
-import { UserIcon, HeartIcon, CartIcon, LocationIcon, CameraIcon, LogoutIcon } from "../components/common/Icons";
-
+import {
+  UserIcon,
+  HeartIcon,
+  CartIcon,
+  LocationIcon,
+  CameraIcon,
+  LogoutIcon,
+} from "../components/common/Icons";
 import { useFavorites } from "../context/FavoritesContext";
 import { useCart } from "../context/CartContext";
 import { useLocationContext } from "../context/LocationContext";
@@ -14,19 +19,14 @@ import { footerCategories, footerLinks } from "../data/footer";
 
 export default function ProfilePage() {
   const navigate = useNavigate();
-
   const { favorites } = useFavorites();
   const { cartCount } = useCart();
   const { location } = useLocationContext();
-
   const savedUser = JSON.parse(localStorage.getItem("user") || "null");
-
   const [name, setName] = useState(savedUser?.name || "");
   const [email] = useState(savedUser?.email || "");
   const [phone, setPhone] = useState(savedUser?.phone || "");
-
   const [avatar, setAvatar] = useState(localStorage.getItem("avatar") || "");
-
   const [saved, setSaved] = useState(false);
 
   // Если пользователь не вошёл
